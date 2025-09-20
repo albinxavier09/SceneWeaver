@@ -74,7 +74,7 @@ Make it more compelling while keeping it concise and natural.`,
     } else {
       // OpenAI
       const response = await openai.chat.completions.create({
-        model: "gpt-5",
+        model: "gpt-4o-mini",
         messages: [
           {
             role: "system",
@@ -107,9 +107,53 @@ Make it more compelling while keeping it concise and natural.`,
 
 export async function expandScene(title: string, description: string, duration: number, provider: AIProvider = "openai"): Promise<SceneExpansion> {
   try {
-    const response = await openai.chat.completions.create({
-      model: "gpt-5",
-      messages: [
+    let result;
+    
+    if (provider === "gemini") {
+      const response = await gemini.models.generateContent({
+        model: "gemini-2.5-flash",
+        config: {
+          systemInstruction: "You are a professional screenwriter and storyboard artist. Expand scene descriptions with detailed visual and narrative elements. Respond with JSON in this format: { 'expandedDescription': string, 'visualElements': string[], 'additionalElements': string[], 'suggestedShots': string[] }",
+          responseMimeType: "application/json",
+        },
+        contents: `Expand this scene for a storyboard:
+
+Title: "${title}"
+Description: "${description}"
+Duration: ${duration}ms
+
+Provide detailed visual elements, camera angles, and additional narrative elements.`,
+      });
+      
+      result = JSON.parse(response.text || '{}');
+    } else if (provider === "openrouter") {
+      const response = await openrouter.chat.completions.create({
+        model: "anthropic/claude-3.5-sonnet",
+        messages: [
+          {
+            role: "system",
+            content: "You are a professional screenwriter and storyboard artist. Expand scene descriptions with detailed visual and narrative elements. Respond with JSON in this format: { 'expandedDescription': string, 'visualElements': string[], 'additionalElements': string[], 'suggestedShots': string[] }",
+          },
+          {
+            role: "user",
+            content: `Expand this scene for a storyboard:
+
+Title: "${title}"
+Description: "${description}"
+Duration: ${duration}ms
+
+Provide detailed visual elements, camera angles, and additional narrative elements.`,
+          },
+        ],
+        response_format: { type: "json_object" },
+      });
+      
+      result = JSON.parse(response.choices[0].message.content || '{}');
+    } else {
+      // OpenAI
+      const response = await openai.chat.completions.create({
+        model: "gpt-4o-mini",
+        messages: [
         {
           role: "system",
           content: "You are a creative director and storyboard expert. Expand scene descriptions with rich visual details, suggest additional elements, and recommend camera shots. Respond with JSON in this format: { 'expandedDescription': string, 'additionalElements': string[], 'suggestedShots': string[] }",
@@ -131,10 +175,12 @@ Provide:
       response_format: { type: "json_object" },
     });
 
-    const result = JSON.parse(response.choices[0].message.content || '{}');
+      result = JSON.parse(response.choices[0].message.content || '{}');
+    }
     
     return {
       expandedDescription: result.expandedDescription || description,
+      visualElements: result.visualElements || [],
       additionalElements: result.additionalElements || [],
       suggestedShots: result.suggestedShots || [],
     };
@@ -185,6 +231,17 @@ export async function generateReferenceImage(description: string, style: string 
       }
       
       throw new Error("No image data in response");
+    } else if (provider === "openrouter") {
+      // OpenRouter doesn't typically support image generation, fallback to OpenAI
+      const response = await openai.images.generate({
+        model: "dall-e-3",
+        prompt: prompt,
+        n: 1,
+        size: "1024x1024",
+        quality: "standard",
+      });
+
+      return { url: response.data?.[0]?.url || "" };
     } else {
       // OpenAI DALL-E
       const response = await openai.images.generate({
@@ -204,9 +261,53 @@ export async function generateReferenceImage(description: string, style: string 
 
 export async function generateSceneSuggestions(projectContext: string, existingScenes: string[], provider: AIProvider = "openai"): Promise<string[]> {
   try {
-    const response = await openai.chat.completions.create({
-      model: "gpt-5",
-      messages: [
+    let result;
+    
+    if (provider === "gemini") {
+      const response = await gemini.models.generateContent({
+        model: "gemini-2.5-flash",
+        config: {
+          systemInstruction: "You are a creative storyboard artist. Generate creative scene suggestions based on project context. Respond with JSON in this format: { 'suggestions': string[] }",
+          responseMimeType: "application/json",
+        },
+        contents: `Generate scene suggestions for this project:
+
+Project Context: "${projectContext}"
+Existing Scenes: ${JSON.stringify(existingScenes)}
+
+Suggest 3-5 new scenes that would complement the existing ones.`,
+      });
+      
+      result = JSON.parse(response.text || '{}');
+      return result.suggestions || [];
+    } else if (provider === "openrouter") {
+      const response = await openrouter.chat.completions.create({
+        model: "anthropic/claude-3.5-sonnet",
+        messages: [
+          {
+            role: "system",
+            content: "You are a creative storyboard artist. Generate creative scene suggestions based on project context. Respond with JSON in this format: { 'suggestions': string[] }",
+          },
+          {
+            role: "user",
+            content: `Generate scene suggestions for this project:
+
+Project Context: "${projectContext}"
+Existing Scenes: ${JSON.stringify(existingScenes)}
+
+Suggest 3-5 new scenes that would complement the existing ones.`,
+          },
+        ],
+        response_format: { type: "json_object" },
+      });
+      
+      result = JSON.parse(response.choices[0].message.content || '{}');
+      return result.suggestions || [];
+    } else {
+      // OpenAI
+      const response = await openai.chat.completions.create({
+        model: "gpt-4o-mini",
+        messages: [
         {
           role: "system",
           content: "You are a creative director specializing in video storyboards. Suggest new scene ideas that would enhance the story flow. Respond with JSON in this format: { 'suggestions': string[] }",
@@ -224,8 +325,9 @@ Suggest 3-5 additional scenes that would improve the story flow, fill gaps, or e
       response_format: { type: "json_object" },
     });
 
-    const result = JSON.parse(response.choices[0].message.content || '{}');
-    return result.suggestions || [];
+      result = JSON.parse(response.choices[0].message.content || '{}');
+      return result.suggestions || [];
+    }
   } catch (error) {
     throw new Error("Failed to generate scene suggestions: " + (error as Error).message);
   }
