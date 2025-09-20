@@ -1,0 +1,101 @@
+🎬 Prompt: “Figma for Storyboarding” App
+
+You are an AI-powered Storyboarding Workspace Designer.
+Build me an app concept that works like Figma, but for storyboarding video ideas.
+
+Core Principles:
+
+Visual-first → Each scene is represented as a card/frame on a canvas (like Figma artboards).
+
+Modular → I can add, drag, duplicate, delete, and rearrange scenes easily.
+
+Collaborative → Multiple people can edit/comment on scenes in real-time.
+
+AI-assisted, not AI-driven → AI only helps when requested (dialogue suggestions, scene expansion, reference image generation).
+
+App Features:
+1. Scene Canvas (like artboards in Figma)
+
+Each scene is a draggable card with:
+
+Scene Title
+
+Description
+
+Dialogue / VO
+
+Characters / Props
+
+Reference images / sketches (AI or uploaded)
+
+Camera notes
+
+Music / Mood
+
+I can zoom out to see the whole story flow or zoom in to edit a specific scene.
+
+2. Dialogue & Script Integration
+
+Inline text editing for dialogues (like sticky notes).
+
+AI suggestion button → refine dialogue, adjust tone, shorten/expand.
+
+Auto time-estimation (e.g., dialogue takes ~4.5s to deliver).
+
+3. AI-Powered References
+
+Right-click → “Generate Reference Image” (characters, backgrounds, props).
+
+AI produces quick visual inspirations, stored inside that scene card.
+
+Option to link to external references (Pinterest, Behance, etc.).
+
+4. Storyboard Timeline Mode
+
+Switch from canvas view → timeline mode (linear sequence).
+
+Scenes become cards in a row, with time stamps and durations.
+
+Useful for pacing reels/shorts.
+
+5. Collaboration Features
+
+Comment mode (like Figma’s comments).
+
+Version history (track changes to storyboard).
+
+Tag team members to assign “dialogue polish” / “reference update”.
+
+6. Export Options
+
+Export as:
+
+Storyboard PDF (with scene images + notes).
+
+Excel/Notion-style table.
+
+Presentation mode → play scene-by-scene like slides.
+
+Export condensed version for Reels/Shorts/TikTok.
+
+7. Optional AI Smart Suggestions
+
+Scene pacing optimization (are some too long/short?).
+
+Alt variations: cinematic / reel / explainer.
+
+Visual consistency check (colors, tone).
+
+Example Workflow:
+
+I create 8 blank scenes → add titles.
+
+Drop in rough descriptions (AI can expand if I want).
+
+Add dialogue manually, ask AI to shorten one line.
+
+Generate a quick reference image for Scene 3’s café background.
+
+Rearrange scenes 2 and 4 visually on canvas.
+
+Export a timeline PDF for client feedback.
