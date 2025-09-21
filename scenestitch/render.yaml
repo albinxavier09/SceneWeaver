@@ -10,6 +10,10 @@ services:
         value: production
       - key: PORT
         value: 3000
+      - key: NEXTAUTH_URL
+        value: https://scenestitch.onrender.com
+      - key: WEBSOCKET_PORT
+        value: 3000
     healthCheckPath: /
     
   - type: pserv
