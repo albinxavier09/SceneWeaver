@@ -5,8 +5,8 @@ const { Server } = require('socket.io');
 const CollaborationServer = require('./src/lib/websocket.ts').default;
 
 const dev = process.env.NODE_ENV !== 'production';
-const hostname = 'localhost';
-const port = process.env.PORT || 3001;
+const hostname = '0.0.0.0'; // Changed for Render compatibility
+const port = process.env.PORT || 3000; // Changed default port
 
 const app = next({ dev, hostname, port });
 const handle = app.getRequestHandler();

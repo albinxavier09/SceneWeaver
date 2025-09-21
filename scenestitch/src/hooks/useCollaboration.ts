@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { io, Socket } from 'socket.io-client';
 
-interface User {
+export interface User {
   id: string;
   name: string;
   email: string;

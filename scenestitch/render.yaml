@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: scenestitch
+    env: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm run start:collab
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+    healthCheckPath: /
+    
+  - type: pserv
+    name: scenestitch-db
+    plan: free
+    databaseName: scenestitch
+    user: scenestitch_user

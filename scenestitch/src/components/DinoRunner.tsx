@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 
 interface DinoRunnerProps {
-  containerRef: React.RefObject<HTMLElement>;
+  containerRef: React.RefObject<HTMLElement | null>;
 }
 
 export default function DinoRunner({ containerRef }: DinoRunnerProps) {
@@ -13,7 +13,7 @@ export default function DinoRunner({ containerRef }: DinoRunnerProps) {
   const [isRunning, setIsRunning] = useState(false);
   const [direction, setDirection] = useState<'left' | 'right'>('right');
   const [dotOffset, setDotOffset] = useState({ x: 0, y: 0 });
-  const animationRef = useRef<number>();
+  const animationRef = useRef<number | undefined>(undefined);
   const lastMoveTime = useRef<number>(0);
 
   // Dino running animation frames using the actual dino image
